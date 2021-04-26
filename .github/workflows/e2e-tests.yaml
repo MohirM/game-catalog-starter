@@ -1,0 +1,58 @@
+name: CI e2e test
+
+on:
+  pull_request:
+
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: fewlines/mongo-with-replica-set:4.4.1
+        ports:
+          - 27017:27017
+
+    container:
+      image: buildkite/puppeteer:8.0.0
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            **/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: yarn install
+
+      - name: Install MongoDB
+        run: |
+          wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | apt-key add -
+          echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.4 main" | tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+          apt-get update
+          apt-get install -y mongodb-org-shell
+          echo 'rs.initiate()' | mongo mongodb://mongodb:${{ job.services.mongodb.ports[27017] }}
+
+      - name: populate-db
+        run: yarn populate-db
+        env:
+          MONGO_URL: mongodb://mongodb:${{ job.services.mongodb.ports[27017] }}/videogame-catalog
+
+      - name: test
+        run: yarn test:e2e
+        env:
+          PORT: 3000
+          MONGO_URL: mongodb://mongodb:${{ job.services.mongodb.ports[27017] }}/videogame-catalog

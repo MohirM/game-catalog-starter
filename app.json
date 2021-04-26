@@ -1,0 +1,11 @@
+{
+  "name": "Videogame Catalog",
+  "environments": {
+    "review": {
+      "scripts": {
+        "postdeploy": "yarn populate-db",
+        "pr-predestroy": "yarn destroy-db"
+      }
+    }
+  }
+}
