@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import nunjucks from "nunjucks";
-import { GameModel } from "./models/game";
+import * as mongo from "mongodb";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("Accept") === "application/json";
 
-export function makeApp(gameModel: GameModel): core.Express {
+export function makeApp(db: mongo.Db): core.Express {
   const app = express();
 
   app.use("/assets", express.static("assets"));
@@ -27,7 +27,7 @@ export function makeApp(gameModel: GameModel): core.Express {
   });
 
   app.get("/games", (request: Request, response: Response) => {
-    gameModel.getAll().then((games) => {
+    db.getAll().then((games) => {
       if (clientWantsJson(request)) {
         response.json(games)
       } else {
@@ -37,7 +37,7 @@ export function makeApp(gameModel: GameModel): core.Express {
   });
 
   app.get("/games/:game_slug", (request: Request, response: Response) => {
-    gameModel.findBySlug(request.params.game_slug).then((game) => {
+    db.findBySlug(request.params.game_slug).then((game) => {
       if (!game) {
         response.status(404).end();
       } else {
@@ -51,7 +51,7 @@ export function makeApp(gameModel: GameModel): core.Express {
   });
 
   app.get("/platforms", (request: Request, response: Response) => {
-    gameModel.getPlatforms().then((platforms) => {
+    db.getPlatforms().then((platforms) => {
       if (clientWantsJson(request)) {
         response.json(platforms)
       } else {
@@ -61,7 +61,7 @@ export function makeApp(gameModel: GameModel): core.Express {
   });
 
   app.get("/platforms/:platform_slug", (request: Request, response: Response) => {
-    gameModel.findByPlatform(request.params.platform_slug)
+    db.findByPlatform(request.params.platform_slug)
       .then((gamesForPlatform) => {
         if (clientWantsJson(request)) {
           response.json(gamesForPlatform)
