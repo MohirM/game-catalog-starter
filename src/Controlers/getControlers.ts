@@ -23,18 +23,18 @@ export function getPlatformsBySlug(request: Request, response: Response): void {
     response.render("platform_slug")
 }
 
-export function getLogin(request: Request, response: Response): void {
-    response.render("login")
-}
-
-export function getLogout(request: Request, response: Response): void {
-    response.render("logout")
-}
-
 export function getPayment(request: Request, response: Response): void {
     response.render("payment")
 }
 
 export function getAllOthers(request: Request, response: Response): void {
     response.render("not-found")
+}
+
+export function getLogin(request: Request, response: Response): void {
+    response.render("login")
+}
+
+export function getLogout(request: Request, response: Response): void {
+    response.render("logout")
 }
