@@ -19,6 +19,9 @@ export function makeApp(db: Db): core.Express {
   app.get("/home", (request: Request, response: Response) => {
     response.render("home");
   });
+  app.get("/games", (request: Request, response: Response) => {
+    response.render("games");
+  });
 
   return app;
 }
