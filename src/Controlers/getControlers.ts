@@ -23,6 +23,10 @@ export function getPlatformsBySlug(request: Request, response: Response): void {
     response.render("platform_slug")
 }
 
+export function getLogin(request: Request, response: Response): void {
+    response.render("login")
+}
+
 export function getLogout(request: Request, response: Response): void {
     response.render("logout")
 }
