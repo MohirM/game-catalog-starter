@@ -1,91 +1,56 @@
 import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
+import { Db } from "mongodb";
 import nunjucks from "nunjucks";
-import * as mongo from "mongodb";
 
-const clientWantsJson = (request: express.Request): boolean =>
-  request.get("Accept") === "application/json";
-
-export function makeApp(db: mongo.Db): core.Express {
+export function makeApp(db: Db): core.Express {
   const app = express();
-
-  app.use("/assets", express.static("assets"));
 
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
   });
-
   app.set("view engine", "njk");
 
   app.get("/", (request: Request, response: Response) => {
-    response.render("not-found");
+    response.render("index");
   });
-
   app.get("/home", (request: Request, response: Response) => {
     response.render("home");
   });
-
   app.get("/games", (request: Request, response: Response) => {
-    db.getAll().then((games) => {
-      if (clientWantsJson(request)) {
-        response.json(games)
-      } else {
-        response.render("games", { games });
-      }
-    });
+    response.render("games");
   });
-
   app.get("/games/:game_slug", (request: Request, response: Response) => {
-    db.findBySlug(request.params.game_slug).then((game) => {
-      if (!game) {
-        response.status(404).end();
-      } else {
-        if (clientWantsJson(request)) {
-          response.json(game);
-        } else {
-          response.render("game_slug", { game });
-        }
-      }
-    });
+    response.render("game_slug");
   });
-
   app.get("/platforms", (request: Request, response: Response) => {
-    db.getPlatforms().then((platforms) => {
-      if (clientWantsJson(request)) {
-        response.json(platforms)
-      } else {
-        response.render("platforms", { platforms });
-      }
-    });
+    response.render("platforms");
   });
-
   app.get("/platforms/:platform_slug", (request: Request, response: Response) => {
-    db.findByPlatform(request.params.platform_slug)
-      .then((gamesForPlatform) => {
-        if (clientWantsJson(request)) {
-          response.json(gamesForPlatform)
-        } else {
-          response.render("platform_slug", { gamesForPlatform });
-        }
-      });
+    response.render("platform_slug");
   });
-
-  app.get("/login", (request, response) => {
+  app.get("/login", (request: Request, response: Response) => {
     response.render("login");
   });
-
-  app.get("/logout", (request, response) => {
+  app.get("/logout", (request: Request, response: Response) => {
     response.render("logout");
   });
-
-  app.get("/payement", (request, response) => {
+  app.get("/payement", (request: Request, response: Response) => {
     response.render("payement");
   });
-
-  app.get("/*", (request, response) => {
-    response.status(400).render("not-found");
+  app.get("/*", (request: Request, response: Response) => {
+    response.render("not-found");
   });
 
   return app;
 }
+
+// db.findByPlatform(request.params.platform_slug)
+//       .then((gamesForPlatform) => {
+//         if (clientWantsJson(request)) {
+//           response.json(gamesForPlatform)
+//         } else {
+//           response.render("platform_slug", { gamesForPlatform });
+//         }
+//       });
