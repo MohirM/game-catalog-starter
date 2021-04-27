@@ -2,11 +2,12 @@ import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import nunjucks from "nunjucks";
 import { GameModel } from "./models/game";
+import * as mongo from "mongodb";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("Accept") === "application/json";
 
-export function makeApp(gameModel: GameModel): core.Express {
+export function makeApp(db: mongo.Db): core.Express {
   const app = express();
 
   app.use("/assets", express.static("assets"));
@@ -66,7 +67,7 @@ export function makeApp(gameModel: GameModel): core.Express {
     //     if (clientWantsJson(request)) {
     //       response.json(gamesForPlatform)
     //     } else {
-          response.render("platform_slug");
+          response.render("platform_slug"z);
     //     }
     //   });
   });
