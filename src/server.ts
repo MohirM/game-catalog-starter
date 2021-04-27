@@ -18,19 +18,24 @@ export function makeApp(db: Db): core.Express {
     response.render("index");
   });
 
+
   // app.get("/home", (request: Request, response: Response) => {
-  //   response.render("index");
+  //   response.render("home");
   // });
 
   app.get("/home", getControlers.getHome)
 
-  app.get("/games", (request: Request, response: Response) => {
-    response.render("games");
-  });
+  // app.get("/games", (request: Request, response: Response) => {
+  //   response.render("games");
+  // });
 
-  app.get("/games/:game_slug", (request: Request, response: Response) => {
-    response.render("games_slug");
-  });
+  app.get("/games", getControlers.getGames)
+
+  // app.get("/games/:game_slug", (request: Request, response: Response) => {
+  //   response.render("games_slug");
+  // });
+
+  app.get("/games/:game_slug", getControlers.getGamesBySlug)
 
   app.get("/platforms", (request: Request, response: Response) => {
     response.render("platforms");
