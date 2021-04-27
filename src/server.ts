@@ -26,5 +26,27 @@ export function makeApp(db: Db): core.Express {
     response.render("games_slug");
   });
 
+  app.get("/platforms", (request: Request, response: Response) => {
+    response.render("platforms");
+  });
+  app.get(
+    "/platforms/:platform_slug",
+    (request: Request, response: Response) => {
+      response.render("platform_slug");
+    }
+  );
+  app.get("/login", (request: Request, response: Response) => {
+    response.render("login");
+  });
+  app.get("/logout", (request: Request, response: Response) => {
+    response.render("logout");
+  });
+  app.get("/payement", (request: Request, response: Response) => {
+    response.render("payement");
+  });
+  app.get("/*", (request: Request, response: Response) => {
+    response.render("not-found");
+  });
+
   return app;
 }
