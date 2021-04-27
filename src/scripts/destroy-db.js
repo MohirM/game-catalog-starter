@@ -1,5 +1,7 @@
 const mongo = require("mongodb");
-const dotenv = require("dotenv")
+const dotenv = require("dotenv");
+// import mongo from "mongodb";
+// import * as dotenv from "dotenv";
 
 dotenv.config()
 

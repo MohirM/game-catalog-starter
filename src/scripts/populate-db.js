@@ -1,6 +1,9 @@
 const mongo = require("mongodb");
 const games = require("./games.json");
 const dotenv = require("dotenv")
+// import * as dotenv from "dotenv";
+// import games from "./games.json";
+// import mongo from "mongodb";
 
 dotenv.config()
 
