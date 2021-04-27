@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db } from "mongodb";
 import nunjucks from "nunjucks";
+import * as getControlers from "./Controlers/getControlers"
 
 export function makeApp(db: Db): core.Express {
   const app = express();
@@ -17,9 +18,11 @@ export function makeApp(db: Db): core.Express {
     response.render("index");
   });
 
-  app.get("/home", (request: Request, response: Response) => {
-    response.render("index");
-  });
+  // app.get("/home", (request: Request, response: Response) => {
+  //   response.render("index");
+  // });
+
+  app.get("/home", getControlers.getHome)
 
   app.get("/games", (request: Request, response: Response) => {
     response.render("games");
