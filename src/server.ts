@@ -14,11 +14,11 @@ export function makeApp(db: Db): core.Express {
   app.set("view engine", "njk");
 
   app.get("/", (request: Request, response: Response) => {
-    response.render("home");
+    response.render("index");
   });
-  
+
   app.get("/home", (request: Request, response: Response) => {
-    response.render("home");
+    response.render("index");
   });
 
   app.get("/games", (request: Request, response: Response) => {
