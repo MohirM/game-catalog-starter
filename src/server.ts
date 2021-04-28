@@ -87,11 +87,15 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
 
   app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
 
-  app.get("/login", async (request: Request, response: Response) => {
-    //const urlConnect = `https://fewlines.connect.prod.fewlines.tech/oauth/authorize?client_id=${oauthClient.clientID}&response_type=code&redirect_uri=${oauthClient.redirectURI}&scope=${oauthClient.scopes[0]}+${oauthClient.scopes[1]}`;
-    const urlConnect = await oauthClient.getAuthorizationURL();
-    response.redirect(`${urlConnect}`);
-  });
+  app.get(
+    "/login",
+    sessionParser,
+    async (request: Request, response: Response) => {
+      //const urlConnect = `https://fewlines.connect.prod.fewlines.tech/oauth/authorize?client_id=${oauthClient.clientID}&response_type=code&redirect_uri=${oauthClient.redirectURI}&scope=${oauthClient.scopes[0]}+${oauthClient.scopes[1]}`;
+      const urlConnect = await oauthClient.getAuthorizationURL();
+      response.redirect(`${urlConnect}`);
+    }
+  );
 
   app.get(
     "/oauth/callback",
@@ -100,11 +104,12 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
       const tokens = await oauthClient.getTokensFromAuthorizationCode(
         `${request.query.code}`
       ); //Returns a list containing the access_token, refresh_token (and id_token if present)
+      console.log("######## REQUEST #########");
+      console.log(request);
       const decoded = await oauthClient.verifyJWT(tokens.access_token, "RS256");
-      if (`${request.session}`) {
-        (`${request.session}` as any).accessToken = (decoded as any).access_token;
-      }
-      response.redirect("back");
+      console.log("######## TOKENS #########");
+      console.log(tokens.access_token); //checking access_token
+      console.log("#################");
     }
   );
 
