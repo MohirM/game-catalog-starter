@@ -28,4 +28,10 @@ export class GameModel {
       .toArray()
       .then((games) => games.map(this.fullGameToGame));
   }
+
+  findBySlug(slug: string): Promise<Game | null> {
+    return this.collection.findOne({
+      slug: slug,
+    });
+  }
 }

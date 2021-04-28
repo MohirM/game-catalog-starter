@@ -49,9 +49,6 @@ export function makeApp(db: Db): core.Express {
 
   app.get("/home", getControlers.getHome);
 
-  // app.get("/games", (request: Request, response: Response) => {
-  //   response.render("games");
-  // });
   const gameModel = new GameModel(db.collection("games"));
   app.get("/games", (request, response) => {
     gameModel.getAll().then((games) => {
@@ -63,11 +60,19 @@ export function makeApp(db: Db): core.Express {
     });
   });
 
-  // app.get("/games/:game_slug", (request: Request, response: Response) => {
-  //   response.render("games_slug");
-  // });
-
-  app.get("/games/:game_slug", getControlers.getGamesBySlug);
+  app.get("/games/:game_slug", (request, response) => {
+    gameModel.findBySlug(request.params.game_slug).then((game) => {
+      if (!game) {
+        response.status(404).render("not-found");
+      } else {
+        if (clientWantsJson(request)) {
+          response.json(game);
+        } else {
+          response.render("game_slug", { game });
+        }
+      }
+    });
+  });
 
   // app.get("/platforms", (request: Request, response: Response) => {
   //   response.render("platforms");
