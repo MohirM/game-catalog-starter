@@ -10,7 +10,7 @@ export type Game = {
 export type Platform = {
   name: string;
   slug: string;
-  [key: string]: any
+  [key: string]: any;
 };
 
 export class GameModel {
@@ -34,14 +34,7 @@ export class GameModel {
     return this.collection
       .find({})
       .toArray()
-      .then((games) => games.map((game) => {
-        return {
-          name: game.name,
-          slug: game.slug,
-          price: (game.price/100),
-          cover: game.cover.url,
-        }
-      }));
+      .then((games) => games.map(this.fullGameToGame));
   }
 
   findBySlug(slug: string): Promise<Game | null> {

@@ -100,7 +100,6 @@ const clientWantsJson = (request: express.Request): boolean =>
       if (clientWantsJson(request)) {
         response.json(platform);
       } else {
-        console.log(platform);
         response.render("platform", { platform });
       }
     });
