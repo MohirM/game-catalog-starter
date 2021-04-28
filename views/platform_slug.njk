@@ -6,7 +6,7 @@
       {% for platform in gamesForPlatform %}
       <div class="col-12 col-md-6 col-xl-3">
         <div class="card" style="width: 18rem">
-          <img src="{{ platform.cover }}" alt="{{ platform.name }}" />
+          <img src="{{ platform.platform.platform_logo_url }}" alt="{{ platform.name }}" />
           <div class="card-body">
             <h5 class="card-title">{{ platform.name }}</h5>
             <p class="card-text">{{ platform.summary }}</p>

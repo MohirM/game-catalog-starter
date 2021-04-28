@@ -4,12 +4,14 @@ export type Game = {
 
   name: string;
   slug: string;
+  platform: string;
   price: number;
   [key: string]: any;
 };
 export type Platform = {
   name: string;
   slug: string;
+  platform: string;
   [key: string]: any;
 };
 
@@ -26,6 +28,7 @@ export class GameModel {
       slug: game.slug,
       price: game.price,
       cover: game.cover.url,
+      platform: game.platform,
       //cover: game.platform.platform_logo_url,
     };
   }
@@ -61,6 +64,7 @@ export class GameModel {
           name: platform.name,
           slug: platform.slug,
           cover: platform.platform_logo_url,
+          platform: platform.platform,
         }));
       });
   }
