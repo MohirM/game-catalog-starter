@@ -17,7 +17,7 @@ beforeEach((done) => {
     mongoClient = client;
     const db = mongoClient.db();
 
-    server = makeApp(db).listen(3030, done);
+    server = makeApp(db, mongoClient).listen(3030, done);
   });
 });
 
