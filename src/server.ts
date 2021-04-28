@@ -80,24 +80,27 @@ export function makeApp(db: Db): core.Express {
   });
 
   app.get("/platforms", (request, response) => {
-    gameModel.getPlatforms().then((platforms) => {
+    gameModel.getPlatforms().then((platform) => {
       if (clientWantsJson(request)) {
-        response.json(platforms);
+        response.json(platform);
       } else {
-        response.render("platform", { platforms });
+        console.log(platform);
+        response.render("platform", { platform });
       }
     });
   });
 
-  // app.get("/platforms/:platform_slug",(request: Request, response: Response) => {
-  //     response.render("platform_slug");
-  //   });
-
-  app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
-
-  // app.get("/login", (request: Request, response: Response) => {
-  //   response.render("login");
-  // });
+  app.get("/platforms/:platform_slug", (request, response) => {
+    gameModel
+      .findByPlatform(request.params.platform_slug)
+      .then((gamesForPlatform) => {
+        if (clientWantsJson(request)) {
+          response.json(gamesForPlatform);
+        } else {
+          response.render("platform_slug", { gamesForPlatform });
+        }
+      });
+  });
 
   app.get("/login", getControlers.getLogin);
 

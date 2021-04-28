@@ -24,7 +24,8 @@ export class GameModel {
       name: game.name,
       slug: game.slug,
       price: game.price,
-      cover: game.cover_url,
+      cover: game.cover.url,
+      //cover: game.platform.platform_logo_url,
     };
   }
 
@@ -61,5 +62,12 @@ export class GameModel {
           cover: platform.platform_logo_url,
         }));
       });
+  }
+
+  findByPlatform(platform_slug: string): Promise<Game[]> {
+    return this.collection
+      .find({ "platform.slug": platform_slug })
+      .toArray()
+      .then((games) => games.map(this.fullGameToGame));
   }
 }
