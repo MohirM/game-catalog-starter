@@ -1,7 +1,6 @@
 import { Collection } from "mongodb";
 
 export type Game = {
-
   name: string;
   slug: string;
   platform: string;
@@ -76,4 +75,3 @@ export class GameModel {
       .then((games) => games.map(this.fullGameToGame));
   }
 }
-
