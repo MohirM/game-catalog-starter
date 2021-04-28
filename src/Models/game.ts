@@ -6,6 +6,12 @@ export type Game = {
   price: number;
   [key: string]: any;
 };
+export type Platform = {
+  name: string;
+  slug: string;
+  [key: string]: any;
+};
+
 export class GameModel {
   private collection: Collection;
 
@@ -33,5 +39,27 @@ export class GameModel {
     return this.collection.findOne({
       slug: slug,
     });
+  }
+
+  getPlatforms(): Promise<Platform[]> {
+    return this.collection
+      .find({})
+      .toArray()
+      .then((games) => {
+        const platforms: Platform[] = [];
+        games.forEach((game) => {
+          const platform = platforms.find(
+            (platform) => platform.slug === game.platform.slug
+          );
+          if (!platform) {
+            platforms.push(game.platform);
+          }
+        });
+        return platforms.map((platform) => ({
+          name: platform.name,
+          slug: platform.slug,
+          cover: platform.platform_logo_url,
+        }));
+      });
   }
 }

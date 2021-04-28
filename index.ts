@@ -8,7 +8,6 @@ import { format } from "prettier";
 
 initDB().then((client) => {
   const db = client.db();
-  //const gameModel = new GameModel(db.collection("games"));
   const app = makeApp(db);
 
   app.listen(process.env.PORT, () => {

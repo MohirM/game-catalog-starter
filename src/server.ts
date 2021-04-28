@@ -47,9 +47,14 @@ export function makeApp(db: Db): core.Express {
   //   response.render("home");
   // });
 
-  app.get("/home", getControlers.getHome);
+  //app.get("/home", getControlers.getHome);
 
   const gameModel = new GameModel(db.collection("games"));
+
+  app.get("/home", (request, response) => {
+    response.render("home");
+  });
+
   app.get("/games", (request, response) => {
     gameModel.getAll().then((games) => {
       if (clientWantsJson(request)) {
@@ -68,17 +73,21 @@ export function makeApp(db: Db): core.Express {
         if (clientWantsJson(request)) {
           response.json(game);
         } else {
-          response.render("game_slug", { game });
+          response.render("games_slug", { game });
         }
       }
     });
   });
 
-  // app.get("/platforms", (request: Request, response: Response) => {
-  //   response.render("platforms");
-  // });
-
-  app.get("/platforms", getControlers.getPlatforms);
+  app.get("/platforms", (request, response) => {
+    gameModel.getPlatforms().then((platforms) => {
+      if (clientWantsJson(request)) {
+        response.json(platforms);
+      } else {
+        response.render("platform", { platforms });
+      }
+    });
+  });
 
   // app.get("/platforms/:platform_slug",(request: Request, response: Response) => {
   //     response.render("platform_slug");
