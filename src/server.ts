@@ -9,9 +9,9 @@ import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
 import * as getControlers from "./Controlers/getControlers"
-import { GameModel } from "./Models/game";
+import { GameModel } from "../src/Models/game"
 
-export function makeApp(gameModel: GameModel): core.Express {
+export function makeApp(db: MongoClient): core.Express {
   //export function makeApp(client: MongoClient): core.Express {
   const app = express();
 
@@ -35,6 +35,11 @@ export function makeApp(gameModel: GameModel): core.Express {
   };
   const oauthClient = new OAuth2Client(oauthClientConstructorProps)
 
+  const gameModel = new GameModel(db.collection("games"));
+
+  const clientWantsJson = (request: express.Request): boolean =>
+  request.get("Accept") === "application/json";
+
   app.get("/", (request: Request, response: Response) => {
     response.render("index");
   });
@@ -43,57 +48,64 @@ export function makeApp(gameModel: GameModel): core.Express {
   //   response.render("home");
   // });
 
-  app.get("/home", getControlers.makeApp2);
+  app.get("/home", getControlers.getHome);
 
   // app.get("/games", (request: Request, response: Response) => {
   //   response.render("games");
   // });
 
-  app.get("/games", getControlers.makeApp2);
-
-  
+  // app.get("/games", getControlers.getGames);
+  app.get("/games", (request, response) => {
+    gameModel.getAll().then((games) => {
+      if (clientWantsJson(request)) {
+        response.json(games)
+      } else {
+        response.render("games", { games });
+      }
+    });
+  });
 
   // app.get("/games/:game_slug", (request: Request, response: Response) => {
   //   response.render("games_slug");
   // });
 
-  // app.get("/games/:game_slug", getControlers.getGamesBySlug);
+  app.get("/games/:game_slug", getControlers.getGamesBySlug);
 
   // app.get("/platforms", (request: Request, response: Response) => {
   //   response.render("platforms");
   // });
 
-  // app.get("/platforms", getControlers.getPlatforms);
+  app.get("/platforms", getControlers.getPlatforms);
 
   // app.get("/platforms/:platform_slug",(request: Request, response: Response) => {
   //     response.render("platform_slug");
   //   });
 
-  // app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
+  app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
 
   // app.get("/login", (request: Request, response: Response) => {
   //   response.render("login");
   // });
   
-  // app.get("/login", getControlers.getLogin);
+  app.get("/login", getControlers.getLogin);
 
   // app.get("/logout", (request: Request, response: Response) => {
   //   response.render("logout");
   // });
 
-  // app.get("/logout", getControlers.getLogout);
+  app.get("/logout", getControlers.getLogout);
 
   // app.get("/payment", (request: Request, response: Response) => {
   //   response.render("payment");
   // });
 
-  // app.get("/payment", getControlers.getPayment);
+  app.get("/payment", getControlers.getPayment);
 
   // app.get("/*", (request: Request, response: Response) => {
   //   response.render("not-found");
   // });
 
-  // app.get("/*", getControlers.getAllOthers);
+  app.get("/*", getControlers.getAllOthers);
 
   return app;
 }
