@@ -9,8 +9,9 @@ import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
 import * as getControlers from "./Controlers/getControlers"
+import { GameModel } from "./Models/game";
 
-export function makeApp(db: Db): core.Express {
+export function makeApp(gameModel: GameModel): core.Express {
   //export function makeApp(client: MongoClient): core.Express {
   const app = express();
 
@@ -42,55 +43,57 @@ export function makeApp(db: Db): core.Express {
   //   response.render("home");
   // });
 
-  app.get("/home", getControlers.getHome);
+  app.get("/home", getControlers.makeApp2);
 
   // app.get("/games", (request: Request, response: Response) => {
   //   response.render("games");
   // });
 
-  app.get("/games", getControlers.getGames);
+  app.get("/games", getControlers.makeApp2);
+
+  
 
   // app.get("/games/:game_slug", (request: Request, response: Response) => {
   //   response.render("games_slug");
   // });
 
-  app.get("/games/:game_slug", getControlers.getGamesBySlug);
+  // app.get("/games/:game_slug", getControlers.getGamesBySlug);
 
   // app.get("/platforms", (request: Request, response: Response) => {
   //   response.render("platforms");
   // });
 
-  app.get("/platforms", getControlers.getPlatforms);
+  // app.get("/platforms", getControlers.getPlatforms);
 
   // app.get("/platforms/:platform_slug",(request: Request, response: Response) => {
   //     response.render("platform_slug");
   //   });
 
-  app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
+  // app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
 
   // app.get("/login", (request: Request, response: Response) => {
   //   response.render("login");
   // });
   
-  app.get("/login", getControlers.getLogin);
+  // app.get("/login", getControlers.getLogin);
 
   // app.get("/logout", (request: Request, response: Response) => {
   //   response.render("logout");
   // });
 
-  app.get("/logout", getControlers.getLogout);
+  // app.get("/logout", getControlers.getLogout);
 
   // app.get("/payment", (request: Request, response: Response) => {
   //   response.render("payment");
   // });
 
-  app.get("/payment", getControlers.getPayment);
+  // app.get("/payment", getControlers.getPayment);
 
   // app.get("/*", (request: Request, response: Response) => {
   //   response.render("not-found");
   // });
 
-  app.get("/*", getControlers.getAllOthers);
+  // app.get("/*", getControlers.getAllOthers);
 
   return app;
 }

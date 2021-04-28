@@ -2,39 +2,63 @@ import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db } from "mongodb";
 import nunjucks from "nunjucks";
+import { GameModel } from "../Models/game";
 
-export function getHome(request: Request, response: Response): void {
-    response.render("home")
+const clientWantsJson = (request: express.Request): boolean =>
+  request.get("Accept") === "application/json";
+
+export function makeApp2(gameModel: GameModel): core.Express {
+    //export function makeApp(client: MongoClient): core.Express {
+    const app = express();
+  
+    nunjucks.configure("views", {
+      autoescape: true,
+      express: app,
+    });
+  
+    app.set("view engine", "njk");
+
+function getHome(request: Request, response: Response): void {
+    response.render("home");
 }
 
-export function getGames(request: Request, response: Response): void {
-    response.render("games")
+function getGames(request: Request, response: Response): void {
+    gameModel.getAll().then((games) => {
+        if (clientWantsJson(request)) {
+          response.json(games)
+        } else {
+          response.render("games", { games });
+        }
+      });
+    // response.render("games");
 }
 
-export function getGamesBySlug(request: Request, response: Response): void {
-    response.render("games_slug")
+function getGamesBySlug(request: Request, response: Response): void {
+    response.render("games_slug");
 }
 
-export function getPlatforms(request: Request, response: Response): void {
-    response.render("platforms")
+function getPlatforms(request: Request, response: Response): void {
+    response.render("platforms");
 }
 
-export function getPlatformsBySlug(request: Request, response: Response): void {
-    response.render("platform_slug")
+function getPlatformsBySlug(request: Request, response: Response): void {
+    response.render("platform_slug");
 }
 
-export function getPayment(request: Request, response: Response): void {
-    response.render("payment")
+function getPayment(request: Request, response: Response): void {
+    response.render("payment");
 }
 
-export function getAllOthers(request: Request, response: Response): void {
-    response.render("not-found")
+function getAllOthers(request: Request, response: Response): void {
+    response.render("not-found");
 }
 
-export function getLogin(request: Request, response: Response): void {
-    response.render("login")
+function getLogin(request: Request, response: Response): void {
+    response.render("login");
 }
 
-export function getLogout(request: Request, response: Response): void {
-    response.render("logout")
+function getLogout(request: Request, response: Response): void {
+    response.render("logout");
+}
+    return app;
 }
