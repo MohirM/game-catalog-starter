@@ -3,12 +3,14 @@ import { Collection } from "mongodb";
 export type Game = {
   name: string;
   slug: string;
+  platform: string;
   price: number;
   [key: string]: any;
 };
 export type Platform = {
   name: string;
   slug: string;
+  platform: string;
   [key: string]: any;
 };
 
@@ -24,8 +26,8 @@ export class GameModel {
       name: game.name,
       slug: game.slug,
       price: game.price,
-      //cover: game.cover.url,
-      cover: game.platform.platform_logo_url,
+      cover: game.cover,
+      platform: game.platform,
     };
   }
 
@@ -59,7 +61,7 @@ export class GameModel {
         return platforms.map((platform) => ({
           name: platform.name,
           slug: platform.slug,
-          cover: platform.platform_logo_url,
+          platform: platform.platform,
         }));
       });
   }
