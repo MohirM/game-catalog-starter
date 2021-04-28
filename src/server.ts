@@ -18,6 +18,8 @@ export function makeApp(client: MongoClient): core.Express {
   const app = express();
   const db = client.db();
 
+  const gameModel = new GameModel(db.collection("games"));
+
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
@@ -65,12 +67,10 @@ export function makeApp(client: MongoClient): core.Express {
     response.render("index");
   });
 
-  app.get("/home", getControlers.getHome);
+  app.get("/home", (request, response) => {
+    response.render("home");
+  });
 
-  // app.get("/games", (request: Request, response: Response) => {
-  //   response.render("games");
-  // });
-  const gameModel = new GameModel(db.collection("games"));
   app.get("/games", (request, response) => {
     gameModel.getAll().then((games) => {
       if (clientWantsJson(request)) {
@@ -107,10 +107,15 @@ export function makeApp(client: MongoClient): core.Express {
     "/oauth/callback",
     sessionParser,
     async (request: Request, response: Response) => {
-      console.log("\n######## REDIRECT_URI FROM CONNECT ########\n");
       const tokens = await oauthClient.getTokensFromAuthorizationCode(
         `${request.query.code}`
-      ); //Returns a list containing the access_token, refresh_token (and id_token if present)
+      );
+      const decoded = await oauthClient.verifyJWT(tokens.access_token, "RS256");
+      console.log(request.session);
+      if (request.session) {
+        (request.session as any).accessToken = tokens.access_token;
+      }
+      response.redirect("/home");
     }
   );
 
