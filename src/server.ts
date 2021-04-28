@@ -9,6 +9,10 @@ import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
 import * as getControlers from "./Controlers/getControlers";
+import { GameModel } from "./Models/game";
+
+const clientWantsJson = (request: express.Request): boolean =>
+  request.get("accept") === "application/json";
 
 export function makeApp(db: Db, client: MongoClient): core.Express {
   //export function makeApp(client: MongoClient): core.Express {
@@ -59,7 +63,19 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
 
   app.get("/home", getControlers.getHome);
 
-  app.get("/games", getControlers.getGames);
+  // app.get("/games", (request: Request, response: Response) => {
+  //   response.render("games");
+  // });
+  const gameModel = new GameModel(db.collection("games"));
+  app.get("/games", (request, response) => {
+    gameModel.getAll().then((games) => {
+      if (clientWantsJson(request)) {
+        response.json(games);
+      } else {
+        response.render("games", { games });
+      }
+    });
+  });
 
   app.get("/games/:game_slug", getControlers.getGamesBySlug);
 
