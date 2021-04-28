@@ -24,7 +24,7 @@ export class GameModel {
     return {
       name: game.name,
       slug: game.slug,
-      price: game.price,
+      price: game.price / 100,
       cover: game.cover.url,
       //cover: game.platform.platform_logo_url,
     };
