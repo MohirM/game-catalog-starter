@@ -10,6 +10,7 @@ import OAuth2Client, {
 } from "@fewlines/connect-client";
 import * as getControlers from "./Controlers/getControlers";
 import { GameModel } from "./Models/game";
+import { Request } from "node-fetch";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
@@ -88,6 +89,21 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     const urlConnect = await oauthClient.getAuthorizationURL();
     response.redirect(`${urlConnect}`);
   });
+
+  app.get(
+    "/oauth/callback",
+    sessionParser,
+    async (request: Request, response: Response) => {
+      const tokens = await oauthClient.getTokensFromAuthorizationCode(
+        `${request.query.code}`
+      ); //Returns a list containing the access_token, refresh_token (and id_token if present)
+      const decoded = await oauthClient.verifyJWT(tokens.access_token, "RS256");
+      if (`${request.session}`) {
+        (`${request.session}` as any).accessToken = (decoded as any).access_token;
+      }
+      response.redirect("back");
+    }
+  );
 
   app.get("/logout", getControlers.getLogout);
 
