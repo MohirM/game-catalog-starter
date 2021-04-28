@@ -111,6 +111,7 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
         if (clientWantsJson(request)) {
           response.json(gamesForPlatform);
         } else {
+          console.log(gamesForPlatform);
           response.render("platform_slug", { gamesForPlatform });
         }
       });
