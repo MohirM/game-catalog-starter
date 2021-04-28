@@ -1,4 +1,4 @@
-import express, { request, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
 import nunjucks from "nunjucks";
@@ -10,7 +10,6 @@ import OAuth2Client, {
 } from "@fewlines/connect-client";
 import * as getControlers from "./Controlers/getControlers";
 import { GameModel } from "./Models/game";
-import { Request } from "node-fetch";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
@@ -26,9 +25,9 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
 
   app.set("view engine", "njk");
 
-  //////////////////////////////////////////
-  // Initialization of the client instance//
-  //////////////////////////////////////////
+  ///////////////////////////////////////////
+  // Initialization of the client instance //
+  ///////////////////////////////////////////
   const oauthClientConstructorProps: OAuth2ClientConstructor = {
     openIDConfigurationURL:
       "https://fewlines.connect.prod.fewlines.tech/.well-known/openid-configuration",
@@ -39,6 +38,10 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     scopes: ["openid", "email"],
   };
   const oauthClient = new OAuth2Client(oauthClientConstructorProps);
+
+  /////////////////////////////////////
+  // Initialization of sessionParser //
+  /////////////////////////////////////
 
   if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
