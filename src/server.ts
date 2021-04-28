@@ -61,12 +61,14 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     response.render("index");
   });
 
-  app.get("/home", getControlers.getHome);
+  //app.get("/home", getControlers.getHome);
 
-  // app.get("/games", (request: Request, response: Response) => {
-  //   response.render("games");
-  // });
   const gameModel = new GameModel(db.collection("games"));
+
+  app.get("/home", (request, response) => {
+    response.render("home");
+  });
+
   app.get("/games", (request, response) => {
     gameModel.getAll().then((games) => {
       if (clientWantsJson(request)) {
@@ -77,11 +79,42 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     });
   });
 
-  app.get("/games/:game_slug", getControlers.getGamesBySlug);
+  app.get("/games/:game_slug", (request, response) => {
+    gameModel.findBySlug(request.params.game_slug).then((game) => {
+      if (!game) {
+        response.status(404).render("not-found");
+      } else {
+        if (clientWantsJson(request)) {
+          response.json(game);
+        } else {
+          response.render("games_slug", { game });
+        }
+      }
+    });
+  });
 
-  app.get("/platforms", getControlers.getPlatforms);
+  app.get("/platforms", (request, response) => {
+    gameModel.getPlatforms().then((platform) => {
+      if (clientWantsJson(request)) {
+        response.json(platform);
+      } else {
+        console.log(platform);
+        response.render("platform", { platform });
+      }
+    });
+  });
 
-  app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
+  app.get("/platforms/:platform_slug", (request, response) => {
+    gameModel
+      .findByPlatform(request.params.platform_slug)
+      .then((gamesForPlatform) => {
+        if (clientWantsJson(request)) {
+          response.json(gamesForPlatform);
+        } else {
+          response.render("platform_slug", { gamesForPlatform });
+        }
+      });
+  });
 
   app.get("/login", async (request: Request, response: Response) => {
     //const urlConnect = `https://fewlines.connect.prod.fewlines.tech/oauth/authorize?client_id=${oauthClient.clientID}&response_type=code&redirect_uri=${oauthClient.redirectURI}&scope=${oauthClient.scopes[0]}+${oauthClient.scopes[1]}`;

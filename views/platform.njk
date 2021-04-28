@@ -1,0 +1,8 @@
+{% extends "layout.njk" %} {% block content %}
+<h1>platforms page</h1>
+
+{% for platfor in platform %}
+
+<p>{{ platfor.name }}</p>
+
+{% endfor %} {% endblock %}
