@@ -1,6 +1,29 @@
-{% extends "layout.njk" %}
+{% extends "layout.njk" %} {% block content %}
+<div class="container">
+  <h1 class="text-center">Games</h1>
+  <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+    {% for game in games %}
 
-{% block content %}
-<h1>Games page</h1>
-<p>Test of controler</p>
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{ game.cover }}" class="card-img-top" alt="..." />
+        <div class="card-body">
+          <h5 class="card-title">{{ game.name }}</h5>
+          <p class="card-text d-md-flex justify-content-md-start">
+            {{ game.price }} $
+          </p>
+        </div>
+        <div class="card-footer">
+          <a
+            href="games/{{ game.slug }}"
+            class="btn btn-dark d-grid gap-2 col-6 mx-auto"
+            >See more!</a
+          >
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 {% endblock %}

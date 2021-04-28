@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { request, Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
 import nunjucks from "nunjucks";
@@ -8,10 +8,20 @@ import mongoSession from "connect-mongo";
 import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
+<<<<<<< HEAD
 import * as getControlers from "./Controlers/getControlers"
 import { GameModel } from "../src/Models/game"
 
 export function makeApp(db: MongoClient): core.Express {
+=======
+import * as getControlers from "./Controlers/getControlers";
+import { GameModel } from "./Models/game";
+
+const clientWantsJson = (request: express.Request): boolean =>
+  request.get("accept") === "application/json";
+
+export function makeApp(db: Db, client: MongoClient): core.Express {
+>>>>>>> d14ba6da63c685b1e84b6281460e418b300a1f6e
   //export function makeApp(client: MongoClient): core.Express {
   const app = express();
 
@@ -26,34 +36,50 @@ export function makeApp(db: MongoClient): core.Express {
   // Initialization of the client instance//
   //////////////////////////////////////////
   const oauthClientConstructorProps: OAuth2ClientConstructor = {
-    openIDConfigurationURL: "https://fewlines.connect.prod.fewlines.tech/.well-known/openid-configuration",
+    openIDConfigurationURL:
+      "https://fewlines.connect.prod.fewlines.tech/.well-known/openid-configuration",
     clientID: `${process.env.CONNECT_CLIENT_ID}`,
     clientSecret: `${process.env.CONNECT_CLIENT_SECRET}`,
-    redirectURI: "https://localhost:3000/oauth/callback",
+    redirectURI: "http://localhost:3000/oauth/callback",
     audience: "wdb2g2",
     scopes: ["openid", "email"],
   };
-  const oauthClient = new OAuth2Client(oauthClientConstructorProps)
+  const oauthClient = new OAuth2Client(oauthClientConstructorProps);
 
+  if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+  }
+  const sessionParser = session({
+    secret:
+      "aboubacar_florian_ilez_and_mohir_are_four_guys_trying_their_best_to_develop_this_app_and_therefor_to_learn_how_to_be_good_devs",
+    name: "sessionId",
+    resave: false,
+    saveUninitialized: true,
+    store: MongoStore.create({
+      client: client,
+    }),
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      expires: new Date(Date.now() + 3600000),
+    },
+  });
+
+<<<<<<< HEAD
   const gameModel = new GameModel(db.collection("games"));
 
   const clientWantsJson = (request: express.Request): boolean =>
   request.get("Accept") === "application/json";
 
   app.get("/", (request: Request, response: Response) => {
+=======
+  app.get("/", sessionParser, (request: Request, response: Response) => {
+>>>>>>> d14ba6da63c685b1e84b6281460e418b300a1f6e
     response.render("index");
   });
 
-  // app.get("/home", (request: Request, response: Response) => {
-  //   response.render("home");
-  // });
+  //app.get("/home", getControlers.getHome);
 
-  app.get("/home", getControlers.getHome);
-
-  // app.get("/games", (request: Request, response: Response) => {
-  //   response.render("games");
-  // });
-
+<<<<<<< HEAD
   // app.get("/games", getControlers.getGames);
   app.get("/games", (request, response) => {
     gameModel.getAll().then((games) => {
@@ -64,46 +90,70 @@ export function makeApp(db: MongoClient): core.Express {
       }
     });
   });
+=======
+  const gameModel = new GameModel(db.collection("games"));
+>>>>>>> d14ba6da63c685b1e84b6281460e418b300a1f6e
 
-  // app.get("/games/:game_slug", (request: Request, response: Response) => {
-  //   response.render("games_slug");
-  // });
+  app.get("/home", (request, response) => {
+    response.render("home");
+  });
 
-  app.get("/games/:game_slug", getControlers.getGamesBySlug);
+  app.get("/games", (request, response) => {
+    gameModel.getAll().then((games) => {
+      if (clientWantsJson(request)) {
+        response.json(games);
+      } else {
+        response.render("games", { games });
+      }
+    });
+  });
 
-  // app.get("/platforms", (request: Request, response: Response) => {
-  //   response.render("platforms");
-  // });
+  app.get("/games/:game_slug", (request, response) => {
+    gameModel.findBySlug(request.params.game_slug).then((game) => {
+      if (!game) {
+        response.status(404).render("not-found");
+      } else {
+        if (clientWantsJson(request)) {
+          response.json(game);
+        } else {
+          response.render("games_slug", { game });
+        }
+      }
+    });
+  });
 
-  app.get("/platforms", getControlers.getPlatforms);
+  app.get("/platforms", (request, response) => {
+    gameModel.getPlatforms().then((platform) => {
+      if (clientWantsJson(request)) {
+        response.json(platform);
+      } else {
+        console.log(platform);
+        response.render("platform", { platform });
+      }
+    });
+  });
 
-  // app.get("/platforms/:platform_slug",(request: Request, response: Response) => {
-  //     response.render("platform_slug");
-  //   });
+  app.get("/platforms/:platform_slug", (request, response) => {
+    gameModel
+      .findByPlatform(request.params.platform_slug)
+      .then((gamesForPlatform) => {
+        if (clientWantsJson(request)) {
+          response.json(gamesForPlatform);
+        } else {
+          response.render("platform_slug", { gamesForPlatform });
+        }
+      });
+  });
 
-  app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
-
-  // app.get("/login", (request: Request, response: Response) => {
-  //   response.render("login");
-  // });
-  
-  app.get("/login", getControlers.getLogin);
-
-  // app.get("/logout", (request: Request, response: Response) => {
-  //   response.render("logout");
-  // });
+  app.get("/login", async (request: Request, response: Response) => {
+    //const urlConnect = `https://fewlines.connect.prod.fewlines.tech/oauth/authorize?client_id=${oauthClient.clientID}&response_type=code&redirect_uri=${oauthClient.redirectURI}&scope=${oauthClient.scopes[0]}+${oauthClient.scopes[1]}`;
+    const urlConnect = await oauthClient.getAuthorizationURL();
+    response.redirect(`${urlConnect}`);
+  });
 
   app.get("/logout", getControlers.getLogout);
 
-  // app.get("/payment", (request: Request, response: Response) => {
-  //   response.render("payment");
-  // });
-
   app.get("/payment", getControlers.getPayment);
-
-  // app.get("/*", (request: Request, response: Response) => {
-  //   response.render("not-found");
-  // });
 
   app.get("/*", getControlers.getAllOthers);
 
