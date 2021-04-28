@@ -8,7 +8,11 @@ import mongoSession from "connect-mongo";
 import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
-import * as getControlers from "./Controlers/getControlers"
+import * as getControlers from "./Controlers/getControlers";
+import { GameModel } from "./Models/game";
+
+const clientWantsJson = (request: express.Request): boolean =>
+  request.get("accept") === "application/json";
 
 export function makeApp(db: Db): core.Express {
   //export function makeApp(client: MongoClient): core.Express {
@@ -25,14 +29,15 @@ export function makeApp(db: Db): core.Express {
   // Initialization of the client instance//
   //////////////////////////////////////////
   const oauthClientConstructorProps: OAuth2ClientConstructor = {
-    openIDConfigurationURL: "https://fewlines.connect.prod.fewlines.tech/.well-known/openid-configuration",
+    openIDConfigurationURL:
+      "https://fewlines.connect.prod.fewlines.tech/.well-known/openid-configuration",
     clientID: `${process.env.CONNECT_CLIENT_ID}`,
     clientSecret: `${process.env.CONNECT_CLIENT_SECRET}`,
     redirectURI: "https://localhost:3000/oauth/callback",
     audience: "wdb2g2",
     scopes: ["openid", "email"],
   };
-  const oauthClient = new OAuth2Client(oauthClientConstructorProps)
+  const oauthClient = new OAuth2Client(oauthClientConstructorProps);
 
   app.get("/", (request: Request, response: Response) => {
     response.render("index");
@@ -47,8 +52,16 @@ export function makeApp(db: Db): core.Express {
   // app.get("/games", (request: Request, response: Response) => {
   //   response.render("games");
   // });
-
-  app.get("/games", getControlers.getGames);
+  const gameModel = new GameModel(db.collection("games"));
+  app.get("/games", (request, response) => {
+    gameModel.getAll().then((games) => {
+      if (clientWantsJson(request)) {
+        response.json(games);
+      } else {
+        response.render("games", { games });
+      }
+    });
+  });
 
   // app.get("/games/:game_slug", (request: Request, response: Response) => {
   //   response.render("games_slug");
@@ -71,7 +84,7 @@ export function makeApp(db: Db): core.Express {
   // app.get("/login", (request: Request, response: Response) => {
   //   response.render("login");
   // });
-  
+
   app.get("/login", getControlers.getLogin);
 
   // app.get("/logout", (request: Request, response: Response) => {

@@ -1,6 +1,7 @@
-{% extends "layout.njk" %}
-
-{% block content %}
+{% extends "layout.njk" %} {% block content %}
 <h1>Games page</h1>
-<p>Test of controler</p>
-{% endblock %}
+
+{% for game in games %}
+<p>{{ game.name }}</p>
+
+{% endfor %} {% endblock %}
