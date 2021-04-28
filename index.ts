@@ -8,8 +8,7 @@ import { format } from "prettier";
 
 initDB().then((client) => {
   const db = client.db();
-  //const gameModel = new GameModel(db.collection("games"));
-  const app = makeApp(db);
+  const app = makeApp(db, client);
 
   app.listen(process.env.PORT, () => {
     console.log(`Server listening on port: ${process.env.PORT}`);
