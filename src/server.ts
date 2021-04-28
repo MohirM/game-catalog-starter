@@ -1,6 +1,7 @@
-import express, { request, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
+import { GameModel } from "./Models/game";
 import nunjucks from "nunjucks";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -8,15 +9,14 @@ import mongoSession from "connect-mongo";
 import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
-import * as getControlers from "./Controlers/getControlers";
-import { GameModel } from "./Models/game";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
 
-export function makeApp(db: Db, client: MongoClient): core.Express {
-  //export function makeApp(client: MongoClient): core.Express {
+  export function makeApp(client: MongoClient): core.Express {
+
   const app = express();
+  const db = client.db();
 
   nunjucks.configure("views", {
     autoescape: true,
@@ -57,7 +57,9 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     },
   });
 
+
   app.get("/", sessionParser, (request: Request, response: Response) => {
+  
     response.render("index");
   });
 
@@ -122,11 +124,11 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     response.redirect(`${urlConnect}`);
   });
 
-  app.get("/logout", getControlers.getLogout);
+  // app.get("/logout", getControlers.getLogout);
 
-  app.get("/payment", getControlers.getPayment);
+  // app.get("/payment", getControlers.getPayment);
 
-  app.get("/*", getControlers.getAllOthers);
+  // app.get("/*", getControlers.getAllOthers);
 
   return app;
 }
