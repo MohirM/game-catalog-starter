@@ -1,6 +1,7 @@
-import express, { request, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
+import { GameModel } from "./Models/game";
 import nunjucks from "nunjucks";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -9,12 +10,11 @@ import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
 
-import { GameModel } from "./Models/game";
-
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
 
   export function makeApp(client: MongoClient): core.Express {
+
   const app = express();
   const db = client.db();
 
@@ -59,7 +59,7 @@ const clientWantsJson = (request: express.Request): boolean =>
 
 
   app.get("/", sessionParser, (request: Request, response: Response) => {
-
+  
     response.render("index");
   });
 
