@@ -15,9 +15,9 @@ beforeEach((done) => {
 
   MongoClient.connect(databaseUrl, options).then((client) => {
     mongoClient = client;
-    const db = mongoClient.db();
+    // const db = mongoClient.db();
 
-    server = makeApp(db, mongoClient).listen(3030, done);
+    server = makeApp(client).listen(3030, done);
   });
 });
 

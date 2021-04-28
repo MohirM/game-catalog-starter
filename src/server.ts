@@ -8,22 +8,15 @@ import mongoSession from "connect-mongo";
 import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
-<<<<<<< HEAD
-import * as getControlers from "./Controlers/getControlers"
-import { GameModel } from "../src/Models/game"
 
-export function makeApp(db: MongoClient): core.Express {
-=======
-import * as getControlers from "./Controlers/getControlers";
 import { GameModel } from "./Models/game";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
 
-export function makeApp(db: Db, client: MongoClient): core.Express {
->>>>>>> d14ba6da63c685b1e84b6281460e418b300a1f6e
-  //export function makeApp(client: MongoClient): core.Express {
+  export function makeApp(client: MongoClient): core.Express {
   const app = express();
+  const db = client.db();
 
   nunjucks.configure("views", {
     autoescape: true,
@@ -64,35 +57,15 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     },
   });
 
-<<<<<<< HEAD
-  const gameModel = new GameModel(db.collection("games"));
 
-  const clientWantsJson = (request: express.Request): boolean =>
-  request.get("Accept") === "application/json";
-
-  app.get("/", (request: Request, response: Response) => {
-=======
   app.get("/", sessionParser, (request: Request, response: Response) => {
->>>>>>> d14ba6da63c685b1e84b6281460e418b300a1f6e
+
     response.render("index");
   });
 
   //app.get("/home", getControlers.getHome);
 
-<<<<<<< HEAD
-  // app.get("/games", getControlers.getGames);
-  app.get("/games", (request, response) => {
-    gameModel.getAll().then((games) => {
-      if (clientWantsJson(request)) {
-        response.json(games)
-      } else {
-        response.render("games", { games });
-      }
-    });
-  });
-=======
   const gameModel = new GameModel(db.collection("games"));
->>>>>>> d14ba6da63c685b1e84b6281460e418b300a1f6e
 
   app.get("/home", (request, response) => {
     response.render("home");
@@ -151,11 +124,11 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
     response.redirect(`${urlConnect}`);
   });
 
-  app.get("/logout", getControlers.getLogout);
+  // app.get("/logout", getControlers.getLogout);
 
-  app.get("/payment", getControlers.getPayment);
+  // app.get("/payment", getControlers.getPayment);
 
-  app.get("/*", getControlers.getAllOthers);
+  // app.get("/*", getControlers.getAllOthers);
 
   return app;
 }

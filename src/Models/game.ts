@@ -1,38 +1,7 @@
 import { Collection } from "mongodb";
 
 export type Game = {
-<<<<<<< HEAD
-    name: string;
-    slug: string;
-    price: number;
-    [key: string]: any;
-  };
 
-export class GameModel {
-    private collection: Collection;
-  
-    constructor(collection: Collection) {
-      this.collection = collection;
-    }
-
-    private fullGameToGame(game: Game) {
-        return {
-          name: game.name,
-          slug: game.slug,
-          price: game.price,
-          cover: game.cover_url,
-          logo: game.platform_logo_url,
-        };
-    }
-
-    getAll(): Promise<Game[]> {
-        return this.collection
-          .find({})
-          .toArray()
-          .then((games) => games.map(this.fullGameToGame));
-    }
-}
-=======
   name: string;
   slug: string;
   price: number;
@@ -103,4 +72,4 @@ export class GameModel {
       .then((games) => games.map(this.fullGameToGame));
   }
 }
->>>>>>> d14ba6da63c685b1e84b6281460e418b300a1f6e
+
