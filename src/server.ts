@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
+import { GameModel } from "./Models/game";
 import nunjucks from "nunjucks";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -8,13 +9,12 @@ import mongoSession from "connect-mongo";
 import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
-import * as getControlers from "./Controlers/getControlers";
-import { GameModel } from "./Models/game";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
 
 export function makeApp(client: MongoClient): core.Express {
+
   const app = express();
   const db = client.db();
 
@@ -63,7 +63,9 @@ export function makeApp(client: MongoClient): core.Express {
     },
   });
 
+
   app.get("/", sessionParser, (request: Request, response: Response) => {
+  
     response.render("index");
   });
 
@@ -81,11 +83,43 @@ export function makeApp(client: MongoClient): core.Express {
     });
   });
 
-  app.get("/games/:game_slug", getControlers.getGamesBySlug);
+  app.get("/games/:game_slug", (request, response) => {
+    gameModel.findBySlug(request.params.game_slug).then((game) => {
+      if (!game) {
+        response.status(404).render("not-found");
+      } else {
+        if (clientWantsJson(request)) {
+          response.json(game);
+        } else {
+          response.render("games_slug", { game });
+        }
+      }
+    });
+  });
 
-  app.get("/platforms", getControlers.getPlatforms);
+  app.get("/platforms", (request, response) => {
+    gameModel.getPlatforms().then((platform) => {
+      if (clientWantsJson(request)) {
+        response.json(platform);
+      } else {
+        console.log(platform);
+        response.render("platform", { platform });
+      }
+    });
+  });
 
-  app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
+  app.get("/platforms/:platform_slug", (request, response) => {
+    gameModel
+      .findByPlatform(request.params.platform_slug)
+      .then((gamesForPlatform) => {
+        if (clientWantsJson(request)) {
+          response.json(gamesForPlatform);
+        } else {
+          console.log(gamesForPlatform);
+          response.render("platform_slug", { gamesForPlatform });
+        }
+      });
+  });
 
   /////////////////////
   // Authentication //
