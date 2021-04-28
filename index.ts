@@ -4,7 +4,6 @@ import { initDB } from "./src/init-database";
 import { GameModel } from "./src/Models/game";
 
 dotenv.config();
-import { format } from "prettier";
 
 initDB().then((client) => {
   const db = client.db();
