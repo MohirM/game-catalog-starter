@@ -5,12 +5,13 @@ export type Game = {
   slug: string;
   platform: string;
   price: number;
+  platform: string;
   [key: string]: any;
 };
 export type Platform = {
   name: string;
+  platform_logo_url: string;
   slug: string;
-  platform: string;
   [key: string]: any;
 };
 
@@ -60,8 +61,8 @@ export class GameModel {
         });
         return platforms.map((platform) => ({
           name: platform.name,
+          platform_logo_url: platform.platform_logo_url,
           slug: platform.slug,
-          platform: platform.platform,
         }));
       });
   }
