@@ -48,7 +48,7 @@ export function makeApp(client: MongoClient): core.Express {
   // Initialization of sessionParser //
   /////////////////////////////////////
 
-  if (process.env.NODE_ENV === `${process.env.STAGE_ENV}`) {
+  if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1);
   }
   const sessionParser = session({
@@ -61,7 +61,7 @@ export function makeApp(client: MongoClient): core.Express {
       client: client,
     }),
     cookie: {
-      secure: process.env.NODE_ENV === `${process.env.STAGE_ENV}`,
+      secure: process.env.NODE_ENV === "production",
       expires: new Date(Date.now() + 3600000),
     },
   });
