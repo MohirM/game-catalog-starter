@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { request, Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
 import { GameModel } from "./Models/game";
@@ -62,14 +62,21 @@ export function makeApp(client: MongoClient): core.Express {
     },
   });
 
+  ////////////////////////////////////////////////////
+  // Declaring variables for checking loggin status //
+  ////////////////////////////////////////////////////
   let checkingLoggin = false;
+  let checkingLogginStatus: any = false;
+
+  //////////////
+  // Routing //
+  /////////////
 
   app.get("/", sessionParser, (request: Request, response: Response) => {
     response.render("index", { checkingLoggin });
   });
 
   app.get("/home", sessionParser, async (request, response) => {
-    console.log();
     response.render("home", { checkingLoggin });
   });
 
@@ -122,6 +129,14 @@ export function makeApp(client: MongoClient): core.Express {
       });
   });
 
+  app.get("/payment", (request: Request, response: Response) => {
+    if (checkingLogginStatus) {
+      response.render("payment", { checkingLoggin });
+    } else {
+      response.redirect("/login");
+    }
+  });
+
   /////////////////////
   // Authentication //
   ///////////////////
@@ -144,6 +159,8 @@ export function makeApp(client: MongoClient): core.Express {
       );
 
       const decoded = await oauthClient.verifyJWT(tokens.access_token, "RS256");
+      checkingLogginStatus = decoded;
+
       try {
         if (request.session) {
           (request.session as any).accessToken = tokens.access_token;
@@ -161,14 +178,13 @@ export function makeApp(client: MongoClient): core.Express {
     if (request.session) {
       request.session.destroy(() => {
         checkingLoggin = false;
-        response.render("home");
+        checkingLogginStatus = false;
+        response.redirect("/home");
       });
     } else {
-      response.render("home");
+      response.redirect("/home");
     }
   });
-
-  // app.get("/payment", getControlers.getPayment);
 
   // app.get("/*", getControlers.getAllOthers);
 
