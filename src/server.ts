@@ -69,6 +69,7 @@ export function makeApp(client: MongoClient): core.Express {
   });
 
   app.get("/home", sessionParser, async (request, response) => {
+    console.log();
     response.render("home", { checkingLoggin });
   });
 
@@ -156,7 +157,16 @@ export function makeApp(client: MongoClient): core.Express {
     }
   );
 
-  // app.get("/logout", getControlers.getLogout);
+  app.get("/logout", sessionParser, (request: Request, response: Response) => {
+    if (request.session) {
+      request.session.destroy(() => {
+        checkingLoggin = false;
+        response.render("home");
+      });
+    } else {
+      response.render("home");
+    }
+  });
 
   // app.get("/payment", getControlers.getPayment);
 
