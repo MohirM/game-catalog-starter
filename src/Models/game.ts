@@ -3,7 +3,6 @@ import { Collection } from "mongodb";
 export type Game = {
   name: string;
   slug: string;
-  platform: string;
   price: number;
   platform: string;
   [key: string]: any;
