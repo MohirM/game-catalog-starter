@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
+import { GameModel } from "./Models/game";
 import nunjucks from "nunjucks";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -8,8 +9,6 @@ import mongoSession from "connect-mongo";
 import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
-import * as getControlers from "./Controlers/getControlers";
-import { GameModel } from "./Models/game";
 
 const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
@@ -63,12 +62,14 @@ export function makeApp(client: MongoClient): core.Express {
     },
   });
 
+  let checkingLoggin = false;
+
   app.get("/", sessionParser, (request: Request, response: Response) => {
-    response.render("index");
+    response.render("index", { checkingLoggin });
   });
 
-  app.get("/home", (request, response) => {
-    response.render("home");
+  app.get("/home", sessionParser, async (request, response) => {
+    response.render("home", { checkingLoggin });
   });
 
   app.get("/games", (request, response) => {
@@ -76,16 +77,49 @@ export function makeApp(client: MongoClient): core.Express {
       if (clientWantsJson(request)) {
         response.json(games);
       } else {
-        response.render("games", { games });
+        response.render("games", { games, checkingLoggin });
       }
     });
   });
 
-  app.get("/games/:game_slug", getControlers.getGamesBySlug);
+  app.get("/games/:game_slug", (request, response) => {
+    gameModel.findBySlug(request.params.game_slug).then((game) => {
+      if (!game) {
+        response.status(404).render("not-found");
+      } else {
+        if (clientWantsJson(request)) {
+          response.json(game);
+        } else {
+          response.render("games_slug", { game, checkingLoggin });
+        }
+      }
+    });
+  });
 
-  app.get("/platforms", getControlers.getPlatforms);
+  app.get("/platforms", (request, response) => {
+    gameModel.getPlatforms().then((platform) => {
+      if (clientWantsJson(request)) {
+        response.json(platform);
+      } else {
+        response.render("platform", { platform, checkingLoggin });
+      }
+    });
+  });
 
-  app.get("/platforms/:platform_slug", getControlers.getPlatformsBySlug);
+  app.get("/platforms/:platform_slug", (request, response) => {
+    gameModel
+      .findByPlatform(request.params.platform_slug)
+      .then((gamesForPlatform) => {
+        if (clientWantsJson(request)) {
+          response.json(gamesForPlatform);
+        } else {
+          response.render("platform_slug", {
+            gamesForPlatform,
+            checkingLoggin,
+          });
+        }
+      });
+  });
 
   /////////////////////
   // Authentication //
@@ -95,10 +129,7 @@ export function makeApp(client: MongoClient): core.Express {
     "/login",
     sessionParser,
     async (request: Request, response: Response) => {
-      console.log("\n######## NEW TRY ON CONNECT ########\n");
       const urlConnect = await oauthClient.getAuthorizationURL();
-      //console.log("\n######## urlConnect ########\n");
-      console.log(urlConnect);
       response.redirect(`${urlConnect}`);
     }
   );
@@ -110,12 +141,18 @@ export function makeApp(client: MongoClient): core.Express {
       const tokens = await oauthClient.getTokensFromAuthorizationCode(
         `${request.query.code}`
       );
+
       const decoded = await oauthClient.verifyJWT(tokens.access_token, "RS256");
-      console.log(request.session);
-      if (request.session) {
-        (request.session as any).accessToken = tokens.access_token;
+      try {
+        if (request.session) {
+          (request.session as any).accessToken = tokens.access_token;
+          checkingLoggin = true;
+          response.render("home", { checkingLoggin });
+        }
+      } catch (error) {
+        console.error(error);
+        response.redirect("/home");
       }
-      response.redirect("/home");
     }
   );
 
