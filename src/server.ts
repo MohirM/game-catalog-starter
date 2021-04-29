@@ -17,7 +17,7 @@ const clientWantsJson = (request: express.Request): boolean =>
 export function makeApp(db: Db, client: MongoClient): core.Express {
   //export function makeApp(client: MongoClient): core.Express {
   const app = express();
-
+  const formParser = express.urlencoded({ extended: true });
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
@@ -98,21 +98,21 @@ export function makeApp(db: Db, client: MongoClient): core.Express {
       if (clientWantsJson(request)) {
         response.json(platform);
       } else {
-        console.log(platform);
         response.render("platform", { platform });
       }
     });
   });
 
-  app.get("/platforms/:platform_slug", (request, response) => {
+  app.get("/platforms/:platform_slug", formParser, (request, response) => {
     gameModel
       .findByPlatform(request.params.platform_slug)
       .then((gamesForPlatform) => {
         if (clientWantsJson(request)) {
           response.json(gamesForPlatform);
         } else {
+          const gameName = request.params.platform_slug;
           console.log(gamesForPlatform);
-          response.render("platform_slug", { gamesForPlatform });
+          response.render("platform_slug", { gamesForPlatform, gameName });
         }
       });
   });
