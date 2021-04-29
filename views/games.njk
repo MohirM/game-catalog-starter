@@ -1,4 +1,24 @@
 {% extends "layout.njk" %} {% block content %}
+
+<style>
+  .card {
+    height: 40rem;
+    background: -moz-linear-gradient(-45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
+    background: -webkit-linear-gradient(-45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
+  }
+  .card:hover {
+    transform: scale(1.08);
+    transition: all 1s ease;
+    cursor: pointer;
+    border: 3px solid black;
+  }
+  .card-footer {
+    border-top: solid black;
+  }
+</style>
+
 <div class="container">
   <h1 class="text-center">Games</h1>
   <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
@@ -6,19 +26,24 @@
 
     <div class="col">
       <div class="card h-100">
-        <img src="{{ game.cover.url }}" class="card-img-top" alt="..." />
+        <img src="{{ game.cover.url }}" class="card-img-top" alt="..." style="
+        height: 20rem;
+        "/>
         <div class="card-body">
-          <h5 class="card-title">{{ game.name }}</h5>
-          <p class="card-text d-md-flex justify-content-md-start">
+          <h5 class="card-title" style="color:white;">{{ game.name }}</h5>
+          <p class="card-text d-md-flex justify-content-md-start" style="color:white;">
             {{ game.price / 100 }} $
           </p>
         </div>
         <div class="card-footer">
           <a
             href="games/{{ game.slug }}"
-            class="btn btn-dark d-grid gap-2 col-6 mx-auto"
-            >See more!</a
-          >
+            class="btn d-grid gap-2 col-6 mx-auto"
+            style="
+            background-color: orange;
+            color: white;
+            "
+            >See more!</a>
         </div>
       </div>
     </div>
