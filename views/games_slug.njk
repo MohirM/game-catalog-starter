@@ -1,8 +1,39 @@
-{% extends "layout.njk" %}
-<h1>Game slug page</h1>
-{% block content %}
-<h1>game description</h1>
-<img src="{{ game.cover_url }}" />
-<h2>{{ game.name }}</h2>
-<p>{{ game.summary }}</p>
+{% extends "layout.njk" %} {% block content %}
+<br />
+<div class="container">
+  <div class="card mb-3">
+    <div class="row g-0">
+      <div>
+        <center><img src="{{ game.cover.url }}" alt="..." style="
+        margin-top: 2rem;
+        " /></center>
+      </div>
+      <div class="col-md-12">
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: justify; text-align: center; margin-bottom: 1rem; margin-top: 1rem;">{{ game.name }}</h5>
+          <p class="card-text" style="text-align: justify; text-align: center;">{{ game.summary }}</p>
+          <p class="card-text" style="text-align: justify; text-align: center;">{{ game.price / 100 }}$</p>
+          <div class="d-grid col-4 mx-auto">
+          <button 
+          src=""
+          class="btn"
+          type="button"
+          style="
+            font-size: 3em;
+            color: white;
+            background-color:limegreen;
+            height: 5rem;
+            border-radius: 6px;
+            ">
+          Achat
+        </button>
+        </div>
+          <p class="card-text">
+            <small class="text-muted">Last updated 3 mins ago</small>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
