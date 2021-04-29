@@ -14,11 +14,15 @@ const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
 
 export function makeApp(client: MongoClient): core.Express {
+  
   const app = express();
+  
+  const formParser = express.urlencoded({ extended: true });
+  
   const db = client.db();
-
+  
   const gameModel = new GameModel(db.collection("games"));
-
+  
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
@@ -114,16 +118,18 @@ export function makeApp(client: MongoClient): core.Express {
     });
   });
 
-  app.get("/platforms/:platform_slug", (request, response) => {
+  app.get("/platforms/:platform_slug", formParser, (request, response) => {
     gameModel
       .findByPlatform(request.params.platform_slug)
       .then((gamesForPlatform) => {
         if (clientWantsJson(request)) {
           response.json(gamesForPlatform);
         } else {
+          const gameName = request.params.platform_slug;
           response.render("platform_slug", {
             gamesForPlatform,
             checkingLoggin,
+            gameName
           });
         }
       });
