@@ -73,7 +73,6 @@ export function makeApp(client: MongoClient): core.Express {
   });
 
   app.get("/home", sessionParser, async (request, response) => {
-    console.log();
     response.render("home", { checkingLoggin });
   });
 
