@@ -37,7 +37,13 @@
               <a class="nav-link active" href="/platforms">Platforms</a>
             </li>
             <li class="nav-item1">
-              <a class="nav-link active" href="/login">Login</a>
+              {# <a class="nav-link active" href="/login">Logged : {{checkingLoggin}}</a> #}
+              {% if checkingLoggin %}
+                <a class="nav-link active" href="/logout">Logout</a>
+              {% else %}
+                <a class="nav-link active" href="/login">Login</a>
+              {% endif %}
+
             </li>
           </ul>
         </div>
