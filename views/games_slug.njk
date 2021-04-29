@@ -3,27 +3,31 @@
 <div class="container">
   <div class="card mb-3">
     <div class="row g-0">
-      <h1>game description</h1>
-      <div class="col-md-4">
-        <img src="{{ game.cover.url }}" alt="..." />
+      <div>
+        <center><img src="{{ game.cover.url }}" alt="..." style="
+        margin-top: 2rem;
+        " /></center>
       </div>
-      <div class="d-grid col-6 mx-auto">
-        <button
+      <div class="col-md-12">
+        <div class="card-body">
+          <h5 class="card-title" style="text-align: justify; text-align: center; margin-bottom: 1rem; margin-top: 1rem;">{{ game.name }}</h5>
+          <p class="card-text" style="text-align: justify; text-align: center;">{{ game.summary }}</p>
+          <p class="card-text" style="text-align: justify; text-align: center;">{{ game.price / 100 }}$</p>
+          <div class="d-grid col-4 mx-auto">
+          <button 
+          src=""
           class="btn"
           type="button"
           style="
             font-size: 3em;
             color: white;
-            background-color: rgba(17, 33, 44, 0.623);
-          "
-        >
+            background-color:limegreen;
+            height: 5rem;
+            border-radius: 6px;
+            ">
           Achat
         </button>
-      </div>
-      <div class="col-md-12">
-        <div class="card-body">
-          <h5 class="card-title">{{ game.name }}</h5>
-          <p class="card-text">{{ game.summary }}</p>
+        </div>
           <p class="card-text">
             <small class="text-muted">Last updated 3 mins ago</small>
           </p>
