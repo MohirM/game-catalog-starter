@@ -29,6 +29,7 @@ export function makeApp(client: MongoClient): core.Express {
   });
 
   app.set("view engine", "njk");
+  app.use("/assets", express.static("assets"));
 
   ///////////////////////////////////////////
   // Initialization of the client instance //
@@ -134,7 +135,7 @@ export function makeApp(client: MongoClient): core.Express {
         }
       });
   });
-
+  
   app.get("/payment", (request: Request, response: Response) => {
     if (checkingLogginStatus) {
       response.render("payment", { checkingLoggin });
