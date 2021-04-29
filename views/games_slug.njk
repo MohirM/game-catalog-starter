@@ -2,7 +2,8 @@
 <h1>Game slug page</h1>
 {% block content %}
 <h1>game description</h1>
-<img src="{{ game.cover_url }}" />
-<h2>{{ game.name }}</h2>
-<p>{{ game.summary }}</p>
+<img src="{{ game.cover_url }}"/>
+<h2>{{game.name}}</h2>
+<p>{{game.summary}}</p>
+<a href="games/{{game.slug}}" class="btn btn-dark d-grid gap-2 col-6 mx-auto">Achat!</a>
 {% endblock %}

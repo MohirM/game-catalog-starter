@@ -27,7 +27,7 @@ export class GameModel {
       name: game.name,
       slug: game.slug,
       price: game.price,
-      cover: game.cover.url,
+      cover: game.cover,
       platform: game.platform,
       //cover: game.platform.platform_logo_url,
     };
@@ -44,6 +44,13 @@ export class GameModel {
     return this.collection.findOne({
       slug: slug,
     });
+  }
+
+  findByPlatform(platform_slug: string): Promise<Game[]> {
+    return this.collection
+      .find({ "platform.slug": platform_slug })
+      .toArray()
+      .then((games) => games.map(this.fullGameToGame));
   }
 
   getPlatforms(): Promise<Platform[]> {
@@ -67,13 +74,6 @@ export class GameModel {
           platform: platform.platform,
         }));
       });
-  }
-
-  findByPlatform(platform_slug: string): Promise<Game[]> {
-    return this.collection
-      .find({ "platform.slug": platform_slug })
-      .toArray()
-      .then((games) => games.map(this.fullGameToGame));
   }
 }
 

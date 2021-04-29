@@ -24,9 +24,9 @@ export function getPayment(request: Request, response: Response): void {
   response.render("payment");
 }
 
-export function getAllOthers(request: Request, response: Response): void {
-  response.render("not-found");
-}
+// export function getAllOthers(request: Request, response: Response): void {
+//   response.render("not-found");
+// }
 
 export function getLogin(request: Request, response: Response): void {
   response.render("login");

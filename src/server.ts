@@ -67,10 +67,6 @@ const clientWantsJson = (request: express.Request): boolean =>
 
   const gameModel = new GameModel(db.collection("games"));
 
-  app.get("/home", (request, response) => {
-    response.render("home");
-  });
-
   app.get("/games", (request, response) => {
     gameModel.getAll().then((games) => {
       if (clientWantsJson(request)) {
@@ -121,6 +117,10 @@ const clientWantsJson = (request: express.Request): boolean =>
     //const urlConnect = `https://fewlines.connect.prod.fewlines.tech/oauth/authorize?client_id=${oauthClient.clientID}&response_type=code&redirect_uri=${oauthClient.redirectURI}&scope=${oauthClient.scopes[0]}+${oauthClient.scopes[1]}`;
     const urlConnect = await oauthClient.getAuthorizationURL();
     response.redirect(`${urlConnect}`);
+  });
+
+  app.get("/home", (request, response) => {
+    response.render("home");
   });
 
   // app.get("/logout", getControlers.getLogout);

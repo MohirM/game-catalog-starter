@@ -1,24 +1,20 @@
 {% extends "layout.njk" %} {% block content %}
-<center>
   <h1 class="titreGame">Game platform</h1>
   <div class="container">
     <div class="row row-cols-3">
-      {% for platform in gamesForPlatform %}
+      {% for game in gamesForPlatform %}
       <div class="col-12 col-md-6 col-xl-3">
         <div class="card" style="width: 18rem">
-          <img src="{{ platform.platform.platform_logo_url }}" alt="{{ platform.name }}" />
+          <img src="{{game.platform.platform_logo_url}}" alt="{{game.name}}" />
           <div class="card-body">
-            <h5 class="card-title">{{ platform.name }}</h5>
-            <p class="card-text">{{ platform.summary }}</p>
-            <p class="card-text">{{ platform.price }} $</p>
-            <a href="/games/{{ platform.slug }}" class="btn btn-primary"
-              >Achat</a
-            >
+            <h5 class="card-title">{{game.name}}</h5>
+            <p class="card-text">{{game.summary}}</p>
+            <p class="card-text">{{game.price}} $</p>
+            <a href="/games/{{platform.slug}}" class="btn btn-primary">Achat</a>
           </div>
         </div>
       </div>
       {% endfor %}
     </div>
   </div>
-</center>
 {% endblock %}
