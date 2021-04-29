@@ -193,6 +193,9 @@ export function makeApp(client: MongoClient): core.Express {
     }
   });
 
+  app.get("/comfirmedPurchase", (request: Request, response: Response) => {
+      response.render("confirmed", { checkingLoggin });
+  });
   // app.get("/*", getControlers.getAllOthers);
 
   return app;
