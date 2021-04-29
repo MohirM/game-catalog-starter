@@ -3,9 +3,21 @@
 <style>
   .card {
     height: 40rem;
-    background: -moz-linear-gradient(-45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
-    background: -webkit-linear-gradient(-45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
+    background: -moz-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    background: -webkit-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
   }
   .card:hover {
@@ -18,20 +30,29 @@
     border-top: solid black 2px;
   }
 </style>
-
+<br />
 <div class="container">
-  <h1 class="text-center">Games</h1>
+  <h1 class="text-center" style="color: white">Games</h1>
+  <br />
   <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
     {% for game in games %}
 
     <div class="col">
       <div class="card h-100">
-        <img src="{{ game.cover.url }}" class="card-img-top" alt="..." style="
-        height: 20rem;
-        "/>
+        <img
+          src="{{ game.cover.url }}"
+          class="card-img-top"
+          alt="..."
+          style="height: 20rem"
+        />
         <div class="card-body">
-          <h5 class="card-title" style="color:white; text-align: center;">{{ game.name }}</h5>
-          <p class="card-text d-md-flex justify-content-md-start" style="color:white;">
+          <h5 class="card-title" style="color: white; text-align: center">
+            {{ game.name }}
+          </h5>
+          <p
+            class="card-text d-md-flex justify-content-md-start"
+            style="color: white"
+          >
             {{ game.price / 100 }} $
           </p>
         </div>
@@ -39,11 +60,9 @@
           <a
             href="games/{{ game.slug }}"
             class="btn d-grid gap-2 col-6 mx-auto"
-            style="
-            background-color: orange;
-            color: white;
-            "
-            >See more!</a>
+            style="background-color: orange; color: white"
+            >See more!</a
+          >
         </div>
       </div>
     </div>
