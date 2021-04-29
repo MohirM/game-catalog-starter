@@ -1,8 +1,31 @@
 {% extends "layout.njk" %} {% block content %}
-<h1>platforms page</h1>
+<div class="container">
+  <h1 class="text-center">Platforms</h1>
+  <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+    {% for platfor in platform %}
 
-{% for platfor in platform %}
+    <div class="col">
+      <div class="card h-100">
+        <img
+          src="{{ platfor.platform_logo_url }}"
+          class="card-img-top"
+          alt="..."
+        />
+        <div class="card-body">
+          <h5 class="card-title">{{ platfor.name }}</h5>
+          <p class="card-text d-md-flex justify-content-md-start">logo</p>
+        </div>
+        <div class="card-footer">
+          <a
+            href="platforms/{{ platfor.slug }}"
+            class="btn btn-dark d-grid gap-2 col-6 mx-auto"
+            >See more!</a
+          >
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
 
-<p>{{ platfor.name }}</p>
-
-{% endfor %} {% endblock %}
+{% endblock %}
