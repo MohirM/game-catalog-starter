@@ -127,6 +127,26 @@ export function makeApp(client: MongoClient): core.Express {
       });
   });
 
+  app.get("/platforms/:platform_slug/games/:game_slug", (request, response) => {
+    gameModel.getPlatforms().then((description) => {
+      if (clientWantsJson(request)) {
+        response.json(description);
+      } else {
+        response.render("games_slug", { description });
+      }
+    });
+  });
+
+  app.get("/payment", (request, response) => {
+    gameModel.getPlatforms().then((achat) => {
+      if (clientWantsJson(request)) {
+        response.json(achat);
+      } else {
+        response.render("payment", { achat });
+      }
+    });
+  });
+
   /////////////////////
   // Authentication //
   ///////////////////

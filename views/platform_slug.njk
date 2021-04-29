@@ -5,14 +5,9 @@
   <br />
   <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
     {% for platform in gamesForPlatform %}
-
     <div class="col">
       <div class="card h-100">
-        <img
-          src="{{ platform.cover.url }}"
-          class="card-img-top"
-          alt="{{ platform.name }}"
-        />
+        <img src="{{ platform.cover.url }}" class="card-img-top" alt="{{ platform.name }}"/>
         <div class="card-body">
           <h5 class="card-title">{{ platform.name }}</h5>
           <p class="card-text d-md-flex justify-content-md-start">
@@ -20,7 +15,7 @@
           </p>
         </div>
         <div class="card-footer">
-          <a href="#" class="btn btn-dark d-grid gap-2 col-6 mx-auto"
+          <a href="../games/{{platform.slug}}" class="btn btn-dark d-grid gap-2 col-6 mx-auto"
             >See more!</a
           >
         </div>
