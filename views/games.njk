@@ -15,7 +15,7 @@
     border: 3px solid black;
   }
   .card-footer {
-    border-top: solid black;
+    border-top: solid black 2px;
   }
 </style>
 
@@ -30,7 +30,7 @@
         height: 20rem;
         "/>
         <div class="card-body">
-          <h5 class="card-title" style="color:white;">{{ game.name }}</h5>
+          <h5 class="card-title" style="color:white; text-align: center;">{{ game.name }}</h5>
           <p class="card-text d-md-flex justify-content-md-start" style="color:white;">
             {{ game.price / 100 }} $
           </p>
