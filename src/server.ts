@@ -14,15 +14,14 @@ const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
 
 export function makeApp(client: MongoClient): core.Express {
-  
   const app = express();
-  
+
   const formParser = express.urlencoded({ extended: true });
-  
+
   const db = client.db();
-  
+
   const gameModel = new GameModel(db.collection("games"));
-  
+
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
@@ -126,16 +125,14 @@ export function makeApp(client: MongoClient): core.Express {
         if (clientWantsJson(request)) {
           response.json(gamesForPlatform);
         } else {
-          const gameName = request.params.platform_slug;
           response.render("platform_slug", {
             gamesForPlatform,
             checkingLoggin,
-            gameName
           });
         }
       });
   });
-  
+
   app.get("/payment", (request: Request, response: Response) => {
     if (checkingLogginStatus) {
       response.render("payment", { checkingLoggin });
@@ -194,7 +191,7 @@ export function makeApp(client: MongoClient): core.Express {
   });
 
   app.get("/comfirmedPurchase", (request: Request, response: Response) => {
-      response.render("confirmed", { checkingLoggin });
+    response.render("confirmed", { checkingLoggin });
   });
   // app.get("/*", getControlers.getAllOthers);
 

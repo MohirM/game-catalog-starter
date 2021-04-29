@@ -10,17 +10,79 @@
       integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
       crossorigin="anonymous"
     />
-    <script src="https://kit.fontawesome.com/476c89e3e9.js" crossorigin="anonymous"></script>
+    <script
+      src="https://kit.fontawesome.com/476c89e3e9.js"
+      crossorigin="anonymous"
+    ></script>
     <title>Document</title>
   </head>
   <style>
     body {
-    background-image: url("../assets/images/background.jpeg");
-    background-repeat: repeat-y;
-  }
+      background-image: url("../assets/images/background.jpeg");
+      background-repeat: repeat-y;
+    }
   </style>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <div class="col-lg-12">
+          <nav class="navbar navbar-expand-lg navbar-light bg-dark bg-gradient">
+            <div class="container-fluid" >
+              <a class="navbar-brand" href="/home" style="color: white;">Home</a>
+              <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarScroll"
+                aria-controls="navbarScroll"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+              >
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarScroll">
+                <ul
+                  class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll"
+                  style="--bs-scroll-height: 100px"
+                >
+                <li class="nav-item">
+                  <a class="nav-link active" href="/games" style="color: white;">Games</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link active" href="/platforms" style="color: white;">Platforms</a>
+                </li>
+                  
+                  
+                  <li class="nav-item1">
+                    {# <a class="nav-link active" href="/login" style="color: white;">Logged : {{checkingLoggin}}</a> #}
+                    {% if checkingLoggin %}
+                      <a class="nav-link active" href="/logout" style="color: white;">Logout</a>
+                    {% else %}
+                      <a class="nav-link active" href="/login" style="color: white;">Login</a>
+                    {% endif %}
+      
+                  </li>
+                </ul>
+                <form class="d-flex">
+                  <input
+                    class="form-control me-2"
+                    type="search"
+                    placeholder="Search"
+                    aria-label="Search"
+                  />
+                  <button class="btn btn-outline-success" type="submit" >
+                    Search
+                  </button>
+                </form>
+              </div>
+            </div>
+          </nav>
+        </div>
+        <!-- <img src="https://images.frandroid.com/wp-content/uploads/2020/11/xbox-playstation-pc-nintendo.jpg" class="img-fluid" style="max-width: 100%" alt="..." /> -->
+      </div>
+      
+   
+
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="/home">Home</a>
         <button
@@ -54,13 +116,13 @@
           </ul>
         </div>
       </div>
-    </nav>
+    </nav> -->
     {% block content %}{% endblock %}
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
       crossorigin="anonymous"
     ></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   </body>
 </html>

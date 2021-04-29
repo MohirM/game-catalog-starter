@@ -1,14 +1,26 @@
 {% extends "layout.njk" %} {% block content %}
 
 <style>
-.card {
-  height: 40rem;
-  background: -moz-linear-gradient(-45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
-  background: -webkit-linear-gradient(-45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
-}
-.card:hover {
+  .card {
+    height: 40rem;
+    background: -moz-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    background: -webkit-linear-gradient(
+      -45deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.65) 0%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a6000000', endColorstr='#00000000',GradientType=1 );
+  }
+  .card:hover {
     transform: scale(1.08);
     transition: all 1s ease;
     cursor: pointer;
@@ -21,25 +33,36 @@
 
 <div class="container">
   <br />
-  <h1 class="text-center" style="text-transform: uppercase">{{ gameName }}</h1>
+  <h1 class="text-center" style="text-transform: uppercase; color: white">
+    {{ gamesForPlatform[0].platform.name }}
+  </h1>
   <br />
   <div class="row row-cols-1 row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
     {% for platform in gamesForPlatform %}
     <div class="col">
       <div class="card h-100">
-        <img src="{{ platform.cover.url }}" class="card-img-top" alt="{{ platform.name }}" style="height: 20rem;"/>
+        <img
+          src="{{ platform.cover.url }}"
+          class="card-img-top"
+          alt="{{ platform.name }}"
+          style="height: 20rem"
+        />
         <div class="card-body">
-          <h5 class="card-title" style="color: white; text-align: center;">{{ platform.name }}</h5>
-          <p class="card-text d-md-flex justify-content-md-start" style="color: white;">
+          <h5 class="card-title" style="color: white; text-align: center">
+            {{ platform.name }}
+          </h5>
+          <p
+            class="card-text d-md-flex justify-content-md-start"
+            style="color: white"
+          >
             {{ platform.price / 100 }} $
           </p>
         </div>
         <div class="card-footer">
-          <a href="../games/{{platform.slug}}" class="btn btn-dark d-grid gap-2 col-6 mx-auto"
-          style="
-          background-color: orange;
-          color: white;
-          "
+          <a
+            href="../games/{{ platform.slug }}"
+            class="btn btn-dark d-grid gap-2 col-6 mx-auto"
+            style="background-color: orange; color: white"
             >See more!</a
           >
         </div>
