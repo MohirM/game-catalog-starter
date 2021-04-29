@@ -14,15 +14,14 @@ const clientWantsJson = (request: express.Request): boolean =>
   request.get("accept") === "application/json";
 
 export function makeApp(client: MongoClient): core.Express {
-  
   const app = express();
-  
+
   const formParser = express.urlencoded({ extended: true });
-  
+
   const db = client.db();
-  
+
   const gameModel = new GameModel(db.collection("games"));
-  
+
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
@@ -49,7 +48,7 @@ export function makeApp(client: MongoClient): core.Express {
   // Initialization of sessionParser //
   /////////////////////////////////////
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === `${process.env.STAGE_ENV}`) {
     app.set("trust proxy", 1);
   }
   const sessionParser = session({
@@ -62,7 +61,7 @@ export function makeApp(client: MongoClient): core.Express {
       client: client,
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === `${process.env.STAGE_ENV}`,
       expires: new Date(Date.now() + 3600000),
     },
   });
@@ -130,12 +129,12 @@ export function makeApp(client: MongoClient): core.Express {
           response.render("platform_slug", {
             gamesForPlatform,
             checkingLoggin,
-            gameName
+            gameName,
           });
         }
       });
   });
-  
+
   app.get("/payment", (request: Request, response: Response) => {
     if (checkingLogginStatus) {
       response.render("payment", { checkingLoggin });
