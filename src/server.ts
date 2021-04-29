@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { request, Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, MongoClient } from "mongodb";
 import { GameModel } from "./Models/game";
@@ -67,14 +67,22 @@ export function makeApp(client: MongoClient): core.Express {
     },
   });
 
+  ////////////////////////////////////////////////////
+  // Declaring variables for checking loggin status //
+  ////////////////////////////////////////////////////
+  let checkingLoggin = false;
+  let checkingLogginStatus: any = false;
+
+  //////////////
+  // Routing //
+  /////////////
 
   app.get("/", sessionParser, (request: Request, response: Response) => {
-  
-    response.render("index");
+    response.render("index", { checkingLoggin });
   });
 
-  app.get("/home", (request, response) => {
-    response.render("home");
+  app.get("/home", sessionParser, async (request, response) => {
+    response.render("home", { checkingLoggin });
   });
 
   app.get("/games", (request, response) => {
@@ -82,7 +90,7 @@ export function makeApp(client: MongoClient): core.Express {
       if (clientWantsJson(request)) {
         response.json(games);
       } else {
-        response.render("games", { games });
+        response.render("games", { games, checkingLoggin });
       }
     });
   });
@@ -95,7 +103,7 @@ export function makeApp(client: MongoClient): core.Express {
         if (clientWantsJson(request)) {
           response.json(game);
         } else {
-          response.render("games_slug", { game });
+          response.render("games_slug", { game, checkingLoggin });
         }
       }
     });
@@ -106,7 +114,7 @@ export function makeApp(client: MongoClient): core.Express {
       if (clientWantsJson(request)) {
         response.json(platform);
       } else {
-        response.render("platform", { platform });
+        response.render("platform", { platform, checkingLoggin });
       }
     });
   });
@@ -119,14 +127,21 @@ export function makeApp(client: MongoClient): core.Express {
           response.json(gamesForPlatform);
         } else {
           const gameName = request.params.platform_slug;
-          console.log(gamesForPlatform);
-          response.render("platform_slug", { gamesForPlatform, gameName });
+          response.render("platform_slug", {
+            gamesForPlatform,
+            checkingLoggin,
+            gameName
+          });
         }
       });
   });
-
-  app.get("/payment", (request, response) => {
-    response.render("payment");
+  
+  app.get("/payment", (request: Request, response: Response) => {
+    if (checkingLogginStatus) {
+      response.render("payment", { checkingLoggin });
+    } else {
+      response.redirect("/login");
+    }
   });
 
   /////////////////////
@@ -137,10 +152,7 @@ export function makeApp(client: MongoClient): core.Express {
     "/login",
     sessionParser,
     async (request: Request, response: Response) => {
-      console.log("\n######## NEW TRY ON CONNECT ########\n");
       const urlConnect = await oauthClient.getAuthorizationURL();
-      //console.log("\n######## urlConnect ########\n");
-      console.log(urlConnect);
       response.redirect(`${urlConnect}`);
     }
   );
@@ -152,18 +164,34 @@ export function makeApp(client: MongoClient): core.Express {
       const tokens = await oauthClient.getTokensFromAuthorizationCode(
         `${request.query.code}`
       );
+
       const decoded = await oauthClient.verifyJWT(tokens.access_token, "RS256");
-      console.log(request.session);
-      if (request.session) {
-        (request.session as any).accessToken = tokens.access_token;
+      checkingLogginStatus = decoded;
+
+      try {
+        if (request.session) {
+          (request.session as any).accessToken = tokens.access_token;
+          checkingLoggin = true;
+          response.render("home", { checkingLoggin });
+        }
+      } catch (error) {
+        console.error(error);
+        response.redirect("/home");
       }
-      response.redirect("/home");
     }
   );
 
-  // app.get("/logout", getControlers.getLogout);
-
-  // app.get("/payment", getControlers.getPayment);
+  app.get("/logout", sessionParser, (request: Request, response: Response) => {
+    if (request.session) {
+      request.session.destroy(() => {
+        checkingLoggin = false;
+        checkingLogginStatus = false;
+        response.redirect("/home");
+      });
+    } else {
+      response.redirect("/home");
+    }
+  });
 
   // app.get("/*", getControlers.getAllOthers);
 
