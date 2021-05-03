@@ -113,7 +113,7 @@ export function makeApp(client: MongoClient): core.Express {
       if (clientWantsJson(request)) {
         response.json(platform);
       } else {
-        response.render("platform", { platform, checkingLoggin });
+        response.render("platforms", { platform, checkingLoggin });
       }
     });
   });
@@ -212,7 +212,7 @@ export function makeApp(client: MongoClient): core.Express {
         response.json(platform);
       } else {
         console.log(platform);
-        response.render("platform", { platform });
+        response.render("platforms", { platform });
       }
     });
   });
