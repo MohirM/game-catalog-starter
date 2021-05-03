@@ -72,4 +72,10 @@ export class GameModel {
       .toArray()
       .then((games) => games.map(this.fullGameToGame));
   }
+  getSearch(pattern: string): Promise<Game[]> {
+    return this.collection
+      .find({ name: { $regex: `${pattern}`, $options: "i" } })
+      .toArray()
+      .then((games) => games.map(this.fullGameToGame));
+  }
 }

@@ -198,5 +198,15 @@ export function makeApp(client: MongoClient): core.Express {
     response.render("not-found");
   });
 
+  app.post("/search", formParser, (request, response) => {
+    gameModel.getSearch(request.body.searchInput).then((games) => {
+      if (clientWantsJson(request)) {
+        response.json(games);
+      } else {
+        response.render("games", { games });
+      }
+    });
+  });
+
   return app;
 }
