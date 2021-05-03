@@ -77,7 +77,7 @@ export function makeApp(client: MongoClient): core.Express {
   /////////////
 
   app.get("/", sessionParser, (request: Request, response: Response) => {
-    response.render("index", { checkingLoggin });
+    response.render("home", { checkingLoggin });
   });
 
   app.get("/home", sessionParser, async (request, response) => {
