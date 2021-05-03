@@ -1,11 +1,10 @@
-import express, { request, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
-import { Db, MongoClient } from "mongodb";
+import { MongoClient } from "mongodb";
 import { GameModel } from "./Models/game";
 import nunjucks from "nunjucks";
 import session from "express-session";
 import MongoStore from "connect-mongo";
-import mongoSession from "connect-mongo";
 import OAuth2Client, {
   OAuth2ClientConstructor,
 } from "@fewlines/connect-client";
@@ -169,7 +168,7 @@ export function makeApp(client: MongoClient): core.Express {
         if (request.session) {
           (request.session as any).accessToken = tokens.access_token;
           checkingLoggin = true;
-          response.render("home", { checkingLoggin });
+          response.redirect("/games");
         }
       } catch (error) {
         console.error(error);
