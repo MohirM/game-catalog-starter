@@ -43,3 +43,9 @@ beforeAll(async () => {
 afterAll(async () => {
   await closeBrowser();
 });
+
+test("Test that we have an home with an h1", async () => {
+
+  await goto("http://localhost:3030");
+
+});
