@@ -78,4 +78,26 @@ export class GameModel {
       .toArray()
       .then((games) => games.map(this.fullGameToGame));
   }
+
+  getPlatformsSearch(pattern: string): Promise<Platform[]> {
+    return this.collection
+      .find({ "platform.name": { $regex: `${pattern}`, $options: "i" } })
+      .toArray()
+      .then((games) => {
+        const platforms: Platform[] = [];
+        games.forEach((game) => {
+          const platform = platforms.find(
+            (platform) => platform.slug === game.platform.slug
+          );
+          if (!platform) {
+            platforms.push(game.platform);
+          }
+        });
+        return platforms.map((platform) => ({
+          name: platform.name,
+          platform_logo_url: platform.platform_logo_url,
+          slug: platform.slug,
+        }));
+      });
+  }
 }

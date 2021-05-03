@@ -205,5 +205,17 @@ export function makeApp(client: MongoClient): core.Express {
     });
   });
 
+  app.post("/platformsSearch", formParser, (request, response) => {
+    console.log(request.body.searchInput);
+    gameModel.getPlatformsSearch(request.body.searchInput).then((platform) => {
+      if (clientWantsJson(request)) {
+        response.json(platform);
+      } else {
+        console.log(platform);
+        response.render("platform", { platform });
+      }
+    });
+  });
+
   return app;
 }
