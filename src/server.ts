@@ -102,18 +102,18 @@ export function makeApp(client: MongoClient): core.Express {
         if (clientWantsJson(request)) {
           response.json(game);
         } else {
-          response.render("games_slug", { game, checkingLoggin });
+          response.render("game-slug", { game, checkingLoggin });
         }
       }
     });
   });
 
   app.get("/platforms", (request, response) => {
-    gameModel.getPlatforms().then((platform) => {
+    gameModel.getPlatforms().then((platforms) => {
       if (clientWantsJson(request)) {
-        response.json(platform);
+        response.json(platforms);
       } else {
-        response.render("platform", { platform, checkingLoggin });
+        response.render("platforms", { platforms, checkingLoggin });
       }
     });
   });
@@ -125,7 +125,7 @@ export function makeApp(client: MongoClient): core.Express {
         if (clientWantsJson(request)) {
           response.json(gamesForPlatform);
         } else {
-          response.render("platform_slug", {
+          response.render("platform-slug", {
             gamesForPlatform,
             checkingLoggin,
           });
@@ -149,8 +149,8 @@ export function makeApp(client: MongoClient): core.Express {
     "/login",
     sessionParser,
     async (request: Request, response: Response) => {
-      const urlConnect = await oauthClient.getAuthorizationURL();
-      response.redirect(`${urlConnect}`);
+      const authURL = await oauthClient.getAuthorizationURL();
+      response.redirect(`${authURL}`);
     }
   );
 
@@ -193,7 +193,10 @@ export function makeApp(client: MongoClient): core.Express {
   app.get("/comfirmedPurchase", (request: Request, response: Response) => {
     response.render("confirmed", { checkingLoggin });
   });
-  // app.get("/*", getControlers.getAllOthers);
+  
+  app.get("/*", (request: Request, response: Response) => {
+    response.render("not-found");
+  });
 
   app.post("/search", formParser, (request, response) => {
     gameModel.getSearch(request.body.searchInput).then((games) => {
