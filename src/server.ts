@@ -193,7 +193,7 @@ export function makeApp(client: MongoClient): core.Express {
   app.get("/comfirmedPurchase", (request: Request, response: Response) => {
     response.render("confirmed", { checkingLoggin });
   });
-  
+
   app.get("/*", (request: Request, response: Response) => {
     response.render("not-found");
   });
@@ -204,6 +204,17 @@ export function makeApp(client: MongoClient): core.Express {
         response.json(games);
       } else {
         response.render("games", { games });
+      }
+    });
+  });
+  app.post("/platformsSearch", formParser, (request, response) => {
+    console.log(request.body.searchInput);
+    gameModel.getPlatformsSearch(request.body.searchInput).then((platforms) => {
+      if (clientWantsJson(request)) {
+        response.json(platforms);
+      } else {
+        console.log(platforms);
+        response.render("platforms", { platforms });
       }
     });
   });
