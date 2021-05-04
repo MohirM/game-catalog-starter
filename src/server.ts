@@ -182,7 +182,7 @@ export function makeApp(client: MongoClient): core.Express {
       request.session.destroy(() => {
         checkingLoggin = false;
         checkingLogginStatus = false;
-        response.redirect("/home");
+        response.redirect("/games");
       });
     } else {
       response.redirect("/home");
@@ -202,7 +202,7 @@ export function makeApp(client: MongoClient): core.Express {
       if (clientWantsJson(request)) {
         response.json(games);
       } else {
-        response.render("games", { games });
+        response.render("games", { games, checkingLoggin });
       }
     });
   });
@@ -213,7 +213,7 @@ export function makeApp(client: MongoClient): core.Express {
         response.json(platforms);
       } else {
         console.log(platforms);
-        response.render("platforms", { platforms });
+        response.render("platforms", { platforms, checkingLoggin });
       }
     });
   });
